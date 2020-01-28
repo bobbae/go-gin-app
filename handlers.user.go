@@ -26,7 +26,7 @@ func performLogin(c *gin.Context) {
 	if isUserValid(username, password) {
 		// If the username/password is valid set the token in a cookie
 		token := generateSessionToken()
-		c.SetCookie("token", token, 3600, "", "", false, true)
+		c.SetCookie("token", token, 3600, "", "", http.SameSiteDefaultMode, false, true)
 		c.Set("is_logged_in", true)
 
 		render(c, gin.H{
@@ -50,12 +50,12 @@ func generateSessionToken() string {
 
 func logout(c *gin.Context) {
 	// Clear the cookie
-	c.SetCookie("token", "", -1, "", "", false, true)
+	c.SetCookie("token", "", -1, "", "", http.SameSiteDefaultMode, false, true)
 
 	// Redirect to the home page
 	c.Redirect(http.StatusTemporaryRedirect, "/")
 }
-
+ 
 func showRegistrationPage(c *gin.Context) {
 	// Call the render function with the name of the template to render
 	render(c, gin.H{
@@ -70,7 +70,7 @@ func register(c *gin.Context) {
 	if _, err := registerNewUser(username, password); err == nil {
 		// If the user is created, set the token in a cookie and log the user in
 		token := generateSessionToken()
-		c.SetCookie("token", token, 3600, "", "", false, true)
+		c.SetCookie("token", token, 3600, "", "", http.SameSiteDefaultMode, false, true)
 		c.Set("is_logged_in", true)
 
 		render(c, gin.H{
